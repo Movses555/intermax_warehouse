@@ -25,12 +25,15 @@ class Warehouse extends StatefulWidget {
 
 class _WarehouseState extends State<Warehouse>{
   int? _supplierIndex = 0;
+  int? _itemIndex = 0;
   String? _selectedSupplierName;
 
   List<Suppliers>? _suppliers;
   List<WarehouseItemDetails>? items;
 
   TextEditingController itemSupplierController = TextEditingController();
+  TextEditingController itemNameController = TextEditingController();
+
   StateSetter? _updateSuppliers;
 
   Future<Response<List<WarehouseItemDetails>>>? _future;
@@ -239,6 +242,51 @@ class _WarehouseState extends State<Warehouse>{
                 ),
               );
             });
+      },
+    );
+  }
+
+  // Creating items list
+  StatefulBuilder showItemsDialog() {
+    return StatefulBuilder(
+      builder: (context, setState){
+        return SingleChildScrollView(
+          child: DataTable(
+            columnSpacing: 5.sp,
+            dataRowHeight: 15.sp,
+            columns: [
+              DataColumn(label: Text('')),
+              DataColumn(label: Text('Товар')),
+              DataColumn(label: Text(''))
+            ],
+            rows: List<DataRow>.generate(items!.length, (index){
+              WarehouseItemDetails warehouseItem = items![index];
+              return DataRow(
+                cells: [
+                  DataCell(Container(
+                    height: 5.h,
+                    width: 5.w,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: Image.memory(const Base64Decoder()
+                                .convert(warehouseItem.itemPhoto.toString()))
+                                .image)),
+                  )),
+                  DataCell(Text(warehouseItem.itemName)),
+                  DataCell(Radio<int>(
+                    value: index,
+                    groupValue: _itemIndex,
+                    onChanged: (value) {
+                      setState(() {
+                        _itemIndex = value;
+                      });
+                    },
+                  ))
+                ]
+              );
+            }),
+          ),
+        );
       },
     );
   }
@@ -481,8 +529,21 @@ class _WarehouseState extends State<Warehouse>{
                     FloatingActionButton.extended(
                         onPressed: () => _addItemToWarehouse(
                             controllersList, dropDownItemName, bytes),
-                        label: const Text('Добавить предмет'),
-                        backgroundColor: Colors.lightBlue)
+                        label: const Text('Добавить товар'),
+                        backgroundColor: Colors.lightBlue),
+                    SizedBox(height:  2.h),
+                    Center(
+                      child: InkWell(
+                        child: Text(
+                          'Товар уже есть на складе ?',
+                          style: TextStyle(
+                              decoration: TextDecoration.underline,
+                            color: Colors.lightBlue
+                          ),
+                        ),
+                        onTap: () => _showAddExistingItemDialog(),
+                      )
+                    )
                   ]);
             },
           );
@@ -951,11 +1012,229 @@ class _WarehouseState extends State<Warehouse>{
     );
   }
 
+  // Showing menu to add item which is exist in warehouse
+  void _showAddExistingItemDialog(){
+
+    String dropDownItemName = 'штук';
+
+    TextEditingController itemPriceController = TextEditingController();
+    TextEditingController itemDateController = TextEditingController();
+    TextEditingController itemCountController = TextEditingController();
+
+    List<TextEditingController> controllers  = [
+      itemPriceController,
+      itemDateController,
+      itemCountController
+    ];
+
+    showDialog(
+      context: context,
+      builder: (context){
+        return StatefulBuilder(
+          builder: (context, setState){
+            return SimpleDialog(
+              title: const Text('Добавить товар'),
+              contentPadding: EdgeInsets.all(5.0.sp),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0.sp)),
+              backgroundColor: Colors.white,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextFormField(
+                        enabled: false,
+                        controller: itemNameController,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                BorderRadius.circular(15.0.sp)),
+                            hintText: 'Товар не выбран'),
+                      ),
+                    ),
+                    SizedBox(width: 2.w),
+                    FloatingActionButton.extended(
+                      label: const Text('Выбрать товар'),
+                      onPressed: () =>
+                          _showItemsDialog(),
+                    )
+                  ],
+                ),
+                SizedBox(height: 2.h),
+                TextFormField(
+                  controller: itemPriceController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0.sp)),
+                    label: const Text('Цена'),
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                TextFormField(
+                  controller: itemDateController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0.sp)),
+                    label: const Text('Дата вступления'),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.calendar_today),
+                      onPressed: () {
+                        var now = DateTime.now();
+                        var formatter = DateFormat('dd.MM.yyyy');
+                        String formattedDate = formatter.format(now);
+                        setState(() {
+                          itemDateController.value = itemDateController
+                              .value
+                              .copyWith(text: formattedDate);
+                        });
+                      },
+                    )
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextFormField(
+                        keyboardType: TextInputType.text,
+                        controller: itemCountController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0.sp)),
+                          label: const Text('Количество'),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 2.w),
+                    DropdownButton(
+                        value: dropDownItemName,
+                        icon: const Icon(Icons.arrow_drop_down),
+                        onChanged: (String? value) {
+                          setState(() {
+                            dropDownItemName = value!;
+                          });
+                        },
+                        items: <String>['штук', 'метр']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList()),
+                  ],
+                ),
+                SizedBox(height: 2.h),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextFormField(
+                        enabled: false,
+                        controller: itemSupplierController,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                BorderRadius.circular(15.0.sp)),
+                            hintText: 'Поставщики не выбрано'),
+                      ),
+                    ),
+                    SizedBox(width: 2.w),
+                    FloatingActionButton.extended(
+                        onPressed: () => _showMySuppliers(),
+                        label: const Text('Выбрать')),
+                  ],
+                ),
+                SizedBox(height: 2.h),
+                FloatingActionButton.extended(
+                    onPressed: () => _addExistingItem(controllers, dropDownItemName),
+                    label: const Text('Добавить товар'),
+                    backgroundColor: Colors.lightBlue),
+              ],
+            );
+          },
+        );
+      }
+    );
+  }
+
+  // Adding existing item
+  void _addExistingItem(List<TextEditingController> controllers, String countOption) async {
+    String? item = itemNameController.text;
+    String? supplier = itemSupplierController.text;
+
+    String? price = controllers[0].text;
+    String? date = controllers[1].text;
+    String? count = controllers[2].text;
+
+    if(item == '' || price == '' || date == '' || count == '' || supplier == ''){
+      _showToast(2);
+    }else{
+      var data = {
+        'item' : item,
+        'price' : price,
+        'date' : date,
+        'supplier' : supplier,
+        'count' : int.parse(count),
+        'count_option' : countOption
+      };
+
+      Response response = await ServerSideApi.create(UserState.getIP()!, 1).addExistingItem(data);
+      switch(response.body){
+        case 'count_option_error':
+          _showToast(10);
+          break;
+        case 'success':
+          Navigator.pop(context);
+          Navigator.pop(context);
+
+          itemNameController.clear();
+          itemSupplierController.clear();
+
+          _showToast(1);
+          break;
+      }
+    }
+  }
+
+  // Showing items dialog
+  void _showItemsDialog() {
+    showDialog(
+      context: context,
+      builder: (context){
+        return StatefulBuilder(
+          builder: (context, setState){
+            return SimpleDialog(
+              title: Text('Выберите товар'),
+              contentPadding: EdgeInsets.all(5.0.sp),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0.sp)),
+              backgroundColor: Colors.white,
+              children: [
+                SizedBox(
+                  height: 100.sp,
+                  child: showItemsDialog(),
+                ),
+                FloatingActionButton.extended(
+                  label: const Text('Выбрать'),
+                  onPressed: () => _selectItem(),
+                )
+              ],
+            );
+          },
+        );
+      }
+    );
+  }
+
+  // Select item
+  void _selectItem() {
+    itemNameController.value = itemNameController.value
+        .copyWith(text: items![_itemIndex!].itemName);
+    Navigator.pop(context);
+  }
+
   // Select supplier
   void _selectSupplier(int index) {
     _selectedSupplierName = _suppliers![index].supplierName;
-    itemSupplierController.value =
-        itemSupplierController.value.copyWith(text: _selectedSupplierName);
+    itemSupplierController.value = itemSupplierController.value.copyWith(text: _selectedSupplierName);
     Navigator.pop(context);
   }
 
@@ -1159,6 +1438,25 @@ class _WarehouseState extends State<Warehouse>{
                 width: 5.0.w,
               ),
               const Text("Товар успешно изменен"),
+            ],
+          ),
+        );
+        break;
+      case 10:
+        toast = Container(
+          padding: EdgeInsets.symmetric(horizontal: 5.0.sp, vertical: 5.0.sp),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0.sp),
+            color: Colors.redAccent,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error),
+              SizedBox(
+                width: 5.0.w,
+              ),
+              const Text("Неверно указана единица измерения"),
             ],
           ),
         );

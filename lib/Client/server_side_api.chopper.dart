@@ -6,7 +6,7 @@ part of 'server_side_api.dart';
 // ChopperGenerator
 // **************************************************************************
 
-// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations
+// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations, unnecessary_brace_in_string_interps
 class _$ServerSideApi extends ServerSideApi {
   _$ServerSideApi([ChopperClient? client]) {
     if (client == null) return;
@@ -35,6 +35,14 @@ class _$ServerSideApi extends ServerSideApi {
   @override
   Future<Response<dynamic>> addItem(dynamic data) {
     final $url = '/add_item_to_warehouse.php';
+    final $body = data;
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> addExistingItem(dynamic data) {
+    final $url = '/add_existing_item.php';
     final $body = data;
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
@@ -239,6 +247,14 @@ class _$ServerSideApi extends ServerSideApi {
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client
         .send<List<WarehouseItemDetails>, WarehouseItemDetails>($request);
+  }
+
+  @override
+  Future<Response<List<ItemReport>>> getItemsReport(dynamic data) {
+    final $url = '/get_items_report.php';
+    final $body = data;
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<List<ItemReport>, ItemReport>($request);
   }
 
   @override

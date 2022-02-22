@@ -2,6 +2,7 @@ import 'package:chopper/chopper.dart';
 import 'package:intermax_warehouse_app/BackupFileDetails/back_up_file_details.dart';
 import 'package:intermax_warehouse_app/BrigadeDetails/brigade_details.dart';
 import 'package:intermax_warehouse_app/IssuedItemsDetails/issued_items.dart';
+import 'package:intermax_warehouse_app/Items%20Report%20Model/items_report_model.dart';
 import 'package:intermax_warehouse_app/JsonConverter/converter.dart';
 import 'package:intermax_warehouse_app/LogsDetails/log_details.dart';
 import 'package:intermax_warehouse_app/Privileges/app_privileges.dart';
@@ -30,6 +31,9 @@ abstract class ServerSideApi extends ChopperService {
 
   @Post(path: '/add_item_to_warehouse.php')
   Future<Response> addItem(@Body() var data);
+
+  @Post(path: '/add_existing_item.php')
+  Future<Response> addExistingItem(@Body() var data);
 
   @Post(path: '/edit_warehouse_item.php')
   Future<Response> editItem(@Body() var data);
@@ -105,6 +109,9 @@ abstract class ServerSideApi extends ChopperService {
 
   @Post(path: '/get_items_in_warehouse.php')
   Future<Response<List<WarehouseItemDetails>>> getItems(@Body() var data);
+
+  @Post(path: '/get_items_report.php')
+  Future<Response<List<ItemReport>>> getItemsReport(@Body() var data);
 
   @Post(path: '/get_suppliers.php')
   Future<Response<List<Suppliers>>> getSuppliers(@Body() var data);
@@ -230,7 +237,12 @@ abstract class ServerSideApi extends ChopperService {
         converter = JsonToTypeConverter({
           AppPrivileges: (jsonData) => AppPrivileges.fromJson(jsonData)
         });
-        break;  
+        break;
+      case 19:
+        converter = JsonToTypeConverter({
+          ItemReport: (jsonData) => ItemReport.fromJson(jsonData)
+        });
+        break;
     }
 
     final client = ChopperClient(
