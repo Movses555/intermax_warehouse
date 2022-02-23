@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:intermax_warehouse_app/Client/server_side_api.dart';
@@ -5,27 +7,16 @@ import 'package:intermax_warehouse_app/Items%20Report%20Model/items_report_model
 import 'package:intermax_warehouse_app/UserState/user_state.dart';
 import 'package:sizer/sizer.dart';
 
-class ItemsReportPage extends StatefulWidget{
+class ItemsReportPage extends StatefulWidget {
   const ItemsReportPage({Key? key}) : super(key: key);
 
   @override
   _State createState() => _State();
 }
 
-class _State extends State<ItemsReportPage>{
+class _State extends State<ItemsReportPage>  {
 
-
-  Future<Response<List<ItemReport>>>? _future;
   List<ItemReport>? reports;
-
-  @override
-  void initState() {
-    super.initState();
-
-    var data = {'ip' : UserState.getIP};
-    _future = ServerSideApi.create(UserState.getIP()!, 19).getItemsReport(data);
-    _future!.then((value) => reports = value.body);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,34 +28,68 @@ class _State extends State<ItemsReportPage>{
           backgroundColor: Colors.lightBlue,
         ),
 
-        body: getItemsReport(),
+        body: Center(child: getItemsReport())
       );
     });
   }
 
   //Getting items report
-  FutureBuilder<Response<List<ItemReport>>> getItemsReport(){
+  FutureBuilder<Response<List<ItemReport>>> getItemsReport() {
+    var data = {'ip' : UserState.getIP};
     return FutureBuilder<Response<List<ItemReport>>>(
-      future: _future,
-      builder: (context, snapshot){
-        while(snapshot.connectionState == ConnectionState.done){
+      future: ServerSideApi.create(UserState.getIP()!, 19).getItemsReport(data),
+      builder: (context, snapshot) {
+        while(snapshot.connectionState == ConnectionState.waiting){
           return Center(
             child: CircularProgressIndicator(),
           );
         }
 
         if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
-          return Container();
+          reports = snapshot.data!.body;
+          return buildItemsReportTable();
         }else{
-          return Container();
+          return Center(
+            child: Text('Список пуст', style: TextStyle(fontSize: 8.sp)),
+          );
         }
       },
     );
   }
 
-  Widget buildItemsReportTable(){
+  Widget buildItemsReportTable() {
     return SingleChildScrollView(
-
+      child: DataTable(
+        columns: [
+          DataColumn(label: Text('')),
+          DataColumn(label: Text('Товар')),
+          DataColumn(label: Text('Дата поступления')),
+          DataColumn(label: Text('Количество')),
+          DataColumn(label: Text('Поставщик')),
+          DataColumn(label: Text('Цена')),
+        ],
+        rows: List<DataRow>.generate(reports!.length, (index) {
+          ItemReport itemReport = reports![index];
+          return DataRow(
+            cells: [
+              DataCell(Container(
+                height: 5.h,
+                width: 5.w,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: Image.memory(const Base64Decoder()
+                            .convert(itemReport.photo.toString()))
+                            .image)),
+              )),
+              DataCell(Text(itemReport.item)),
+              DataCell(Text(itemReport.date)),
+              DataCell(Text(itemReport.count + ' ' + itemReport.count_option)),
+              DataCell(Text(itemReport.supplier)),
+              DataCell(Text(itemReport.price))
+            ]
+          );
+        }),
+      )
     );
   }
 }

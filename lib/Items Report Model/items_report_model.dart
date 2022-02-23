@@ -5,8 +5,8 @@ part 'items_report_model.g.dart';
 @JsonSerializable()
 class ItemReport{
 
-  @JsonKey(name: 'name')
-  var name;
+  @JsonKey(name: 'item')
+  var item;
 
   @JsonKey(name: 'price')
   var price;
@@ -27,7 +27,7 @@ class ItemReport{
   var photo;
 
   ItemReport({
-    this.name,
+    this.item,
     this.price,
     this.date,
     this.count,
