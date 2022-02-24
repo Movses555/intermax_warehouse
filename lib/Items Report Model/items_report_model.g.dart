@@ -7,6 +7,7 @@ part of 'items_report_model.dart';
 // **************************************************************************
 
 ItemReport _$ItemReportFromJson(Map<String, dynamic> json) => ItemReport(
+      id: json['id'],
       item: json['item'],
       price: json['price'],
       date: json['date'],
@@ -18,6 +19,7 @@ ItemReport _$ItemReportFromJson(Map<String, dynamic> json) => ItemReport(
 
 Map<String, dynamic> _$ItemReportToJson(ItemReport instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'item': instance.item,
       'price': instance.price,
       'date': instance.date,

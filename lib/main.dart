@@ -785,6 +785,47 @@ class _MyAppState extends State<MyApp> {
                               Text('Удалить возврат'),
                             ]
                           ),
+                          SizedBox(height: 3.h),
+                          Divider(thickness: 0.5.sp),
+                          Text('Отчёты товаров', style: TextStyle(fontSize: 4.sp, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 3.h),
+                          Row(
+                              children: [
+                                Checkbox(
+                                  value: PrivilegesConstants.SEE_ITEMS_REPORT,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      PrivilegesConstants.SEE_ITEMS_REPORT = value!;
+                                    });
+                                  },
+                                ),
+                                Text('Смотреть'),
+                                SizedBox(width: 3.w),
+                                Checkbox(
+                                  value: PrivilegesConstants.CHANGE_ITEMS_REPORT,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      PrivilegesConstants.CHANGE_ITEMS_REPORT = value!;
+                                    });
+                                  },
+                                ),
+                                Text('Изменить'),
+                              ]
+                          ),
+                          SizedBox(height: 3.h),
+                          Row(
+                              children: [
+                                Checkbox(
+                                  value: PrivilegesConstants.DELETE_ITEMS_REPORT,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      PrivilegesConstants.DELETE_ITEMS_REPORT = value!;
+                                    });
+                                  },
+                                ),
+                                Text('Удалить'),
+                              ]
+                          ),
                           SizedBox(height: 3.h), 
                           Divider(thickness: 0.5.sp),
                           Text('Отчёты', style: TextStyle(fontSize: 4.sp, fontWeight: FontWeight.bold)),
@@ -1516,6 +1557,10 @@ class _MyAppState extends State<MyApp> {
       'issue_item' : PrivilegesConstants.ISSUE_ITEM,
       'change_issued_item' : PrivilegesConstants.CHANGE_ISSUED_ITEM,
       'delete_issued_item' : PrivilegesConstants.DELETE_ISSUED_ITEM,
+
+      'see_items_report' : PrivilegesConstants.SEE_ITEMS_REPORT,
+      'change_items_report' : PrivilegesConstants.CHANGE_ITEMS_REPORT,
+      'delete_items_report' : PrivilegesConstants.DELETE_ITEMS_REPORT,
 
       // Returned privileges 
       'add_returned_item' : PrivilegesConstants.ADD_RETURNED_ITEM,

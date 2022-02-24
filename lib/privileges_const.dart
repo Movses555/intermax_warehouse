@@ -18,7 +18,6 @@ class PrivilegesConstants{
     static var SEE_ITEM_DETAILS = true;
     static var CHANGE_WAREHOUSE_ITEM = true;
     static var DELETE_WAREHOUSE_ITEM = true;
-    static var SEE_ITEMS_REPORT = true;
 
     // Brigades privileges
     static var ADD_BRIGADE = true;
@@ -35,6 +34,11 @@ class PrivilegesConstants{
     static var CHANGE_RETURNED_ITEM = true;
     static var DELETE_RETURNED_ITEM = true;
 
+    //Item report privileges
+    static var SEE_ITEMS_REPORT = true;
+    static var CHANGE_ITEMS_REPORT = true;
+    static var DELETE_ITEMS_REPORT = true;
+
     // Suppliers privileges
     static var ADD_SUPPLIER = true;
     static var DELETE_SUPPLIER = true;
@@ -44,6 +48,7 @@ class PrivilegesConstants{
 
     // See logs privileges
     static var SEE_LOGS = true;
+
 
   static void clear(){
       // App privileges
@@ -77,6 +82,11 @@ class PrivilegesConstants{
     ADD_RETURNED_ITEM = true;
     CHANGE_RETURNED_ITEM = true;
     DELETE_RETURNED_ITEM = true;
+
+    //Item report privileges
+    SEE_ITEMS_REPORT = true;
+    CHANGE_ITEMS_REPORT = true;
+    DELETE_ITEMS_REPORT = true;
 
     // Suppliers privileges
     ADD_SUPPLIER = true;

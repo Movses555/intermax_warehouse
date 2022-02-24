@@ -3,6 +3,7 @@ import 'package:intermax_warehouse_app/Client/server_side_api.dart';
 import 'package:intermax_warehouse_app/Privileges/app_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/brigades_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/issued_items_privileges.dart';
+import 'package:intermax_warehouse_app/Privileges/items_report_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/logs_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/reports_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/returned_privileges.dart';
@@ -32,6 +33,7 @@ class Privileges{
        _getBrigadesPrivileges(data),
        _getIssuedItemsPrivileges(data),
        _getReportsPrivileges(data),
+       _getItemsReportPrivileges(data),
        _getReturnedPrivileges(data),
        _getLogsPrivileges(data),
        _getAppPrivileges(data)
@@ -127,6 +129,23 @@ class Privileges{
       PrivilegesConstants.clear();
     }
   }
+
+  // Getting items report privileges
+  Future _getItemsReportPrivileges(data) async {
+    Response<List<ItemsReportPrivileges>> response = await ServerSideApi.create(_ip, 20).getItemsReportPrivileges(data);
+
+    if(response.body != null){
+      List<ItemsReportPrivileges>? returnedPrivileges = response.body;
+
+      PrivilegesConstants.SEE_ITEMS_REPORT = returnedPrivileges![0].seeItemsReport;
+      PrivilegesConstants.CHANGE_ITEMS_REPORT = returnedPrivileges[0].changeItemsReport;
+      PrivilegesConstants.DELETE_ITEMS_REPORT = returnedPrivileges[0].deleteItemsReport;
+    }else{
+      PrivilegesConstants.clear();
+    }
+  }
+
+
 
   // Getting logs privileges
   Future _getLogsPrivileges(var data) async {

@@ -5,6 +5,9 @@ part 'items_report_model.g.dart';
 @JsonSerializable()
 class ItemReport{
 
+  @JsonKey(name: 'id')
+  var id;
+
   @JsonKey(name: 'item')
   var item;
 
@@ -27,6 +30,7 @@ class ItemReport{
   var photo;
 
   ItemReport({
+    this.id,
     this.item,
     this.price,
     this.date,
@@ -36,8 +40,8 @@ class ItemReport{
     this.photo
   });
 
-  factory ItemReport.fromJson(Map<String, dynamic> json) => _$ItemReportFromJson(json);
 
+  factory ItemReport.fromJson(Map<String, dynamic> json) => _$ItemReportFromJson(json);
   Map<String, dynamic> toJson() => _$ItemReportToJson(this);
 
 }

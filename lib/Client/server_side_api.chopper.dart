@@ -129,6 +129,22 @@ class _$ServerSideApi extends ServerSideApi {
   }
 
   @override
+  Future<Response<dynamic>> deleteItemReport(dynamic data) {
+    final $url = '/delete_item_report.php';
+    final $body = data;
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> changeItemReport(dynamic data) {
+    final $url = '/change_item_report.php';
+    final $body = data;
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> backupData(dynamic data) {
     final $url = '/create_backup.php';
     final $body = data;
@@ -250,8 +266,8 @@ class _$ServerSideApi extends ServerSideApi {
   }
 
   @override
-  Future<Response<List<ItemReport>>> getItemsReport(dynamic data) {
-    final $url = '/get_items_report.php';
+  Future<Response<List<ItemReport>>> getItemReport(dynamic data) {
+    final $url = '/get_item_report.php';
     final $body = data;
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<List<ItemReport>, ItemReport>($request);
@@ -341,6 +357,16 @@ class _$ServerSideApi extends ServerSideApi {
     final $body = data;
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<List<ReportsPrivileges>, ReportsPrivileges>($request);
+  }
+
+  @override
+  Future<Response<List<ItemsReportPrivileges>>> getItemsReportPrivileges(
+      dynamic data) {
+    final $url = '/get_items_report_privileges.php';
+    final $body = data;
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client
+        .send<List<ItemsReportPrivileges>, ItemsReportPrivileges>($request);
   }
 
   @override

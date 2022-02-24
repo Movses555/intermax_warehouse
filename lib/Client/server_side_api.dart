@@ -8,6 +8,7 @@ import 'package:intermax_warehouse_app/LogsDetails/log_details.dart';
 import 'package:intermax_warehouse_app/Privileges/app_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/brigades_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/issued_items_privileges.dart';
+import 'package:intermax_warehouse_app/Privileges/items_report_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/logs_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/reports_privileges.dart';
 import 'package:intermax_warehouse_app/Privileges/returned_privileges.dart';
@@ -65,6 +66,12 @@ abstract class ServerSideApi extends ChopperService {
   @Post(path: '/delete_issued_item.php')
   Future<Response> deleteIssuedItem(@Body() var data);
 
+  @Post(path: '/delete_item_report.php')
+  Future<Response> deleteItemReport(@Body() var data);
+
+  @Post(path: '/change_item_report.php')
+  Future<Response> changeItemReport(@Body() var data);
+
   @Post(path: '/create_backup.php')
   Future<Response> backupData(@Body() var data);
 
@@ -110,8 +117,8 @@ abstract class ServerSideApi extends ChopperService {
   @Post(path: '/get_items_in_warehouse.php')
   Future<Response<List<WarehouseItemDetails>>> getItems(@Body() var data);
 
-  @Post(path: '/get_items_report.php')
-  Future<Response<List<ItemReport>>> getItemsReport(@Body() var data);
+  @Post(path: '/get_item_report.php')
+  Future<Response<List<ItemReport>>> getItemReport(@Body() var data);
 
   @Post(path: '/get_suppliers.php')
   Future<Response<List<Suppliers>>> getSuppliers(@Body() var data);
@@ -142,6 +149,9 @@ abstract class ServerSideApi extends ChopperService {
   
   @Post(path: '/get_reports_privileges.php')
   Future<Response<List<ReportsPrivileges>>> getReportsPrivileges(@Body() var data);
+
+  @Post(path: '/get_items_report_privileges.php')
+  Future<Response<List<ItemsReportPrivileges>>> getItemsReportPrivileges(@Body() var data);
   
   @Post(path: '/get_returned_privileges.php')
   Future<Response<List<ReturnedPrivileges>>> getReturnedPrivileges(@Body() var data);
@@ -241,6 +251,11 @@ abstract class ServerSideApi extends ChopperService {
       case 19:
         converter = JsonToTypeConverter({
           ItemReport: (jsonData) => ItemReport.fromJson(jsonData)
+        });
+        break;
+      case 20:
+        converter = JsonToTypeConverter({
+          ItemsReportPrivileges: (jsonData) => ItemsReportPrivileges.fromJson(jsonData)
         });
         break;
     }
