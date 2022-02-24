@@ -246,7 +246,7 @@ abstract class ServerSideApi extends ChopperService {
     }
 
     final client = ChopperClient(
-      baseUrl: 'http://$ip:1072/Склад',
+      baseUrl: 'http://$ip:1072/Warehouse',
       services: [_$ServerSideApi()],
       converter: converter,
     );

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:intermax_warehouse_app/Client/server_side_api.dart';
@@ -15,8 +14,6 @@ class ItemsReportPage extends StatefulWidget {
 }
 
 class _State extends State<ItemsReportPage>  {
-
-  List<ItemReport>? reports;
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +43,8 @@ class _State extends State<ItemsReportPage>  {
         }
 
         if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
-          reports = snapshot.data!.body;
-          return buildItemsReportTable();
+          List<ItemReport>? reports = snapshot.data!.body;
+          return buildItemsReportTable(reports);
         }else{
           return Center(
             child: Text('Список пуст', style: TextStyle(fontSize: 8.sp)),
@@ -57,7 +54,7 @@ class _State extends State<ItemsReportPage>  {
     );
   }
 
-  Widget buildItemsReportTable() {
+  Widget buildItemsReportTable(List<ItemReport>? reports) {
     return SingleChildScrollView(
       child: DataTable(
         columns: [
@@ -67,9 +64,11 @@ class _State extends State<ItemsReportPage>  {
           DataColumn(label: Text('Количество')),
           DataColumn(label: Text('Поставщик')),
           DataColumn(label: Text('Цена')),
+          DataColumn(label: Text('')),
+          DataColumn(label: Text(''))
         ],
         rows: List<DataRow>.generate(reports!.length, (index) {
-          ItemReport itemReport = reports![index];
+          ItemReport itemReport = reports[index];
           return DataRow(
             cells: [
               DataCell(Container(
@@ -85,7 +84,15 @@ class _State extends State<ItemsReportPage>  {
               DataCell(Text(itemReport.date)),
               DataCell(Text(itemReport.count + ' ' + itemReport.count_option)),
               DataCell(Text(itemReport.supplier)),
-              DataCell(Text(itemReport.price))
+              DataCell(Text(itemReport.price)),
+              DataCell(IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () => null,
+              )),
+              DataCell(IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () => null,
+              ))
             ]
           );
         }),
