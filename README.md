@@ -1,4 +1,4 @@
 # Intermax Warehouse App
 
 
-##Images
+## Images
